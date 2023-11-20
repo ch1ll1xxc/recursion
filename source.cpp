@@ -26,10 +26,10 @@ struct HashTableEntry
 };
 
 // Номер полиса, состоящий из 8 чисел
-unsigned long int Randomizer()
+int Randomizer()
 {
-    unsigned long int min = 10000000;
-    unsigned long int max = 99999999;
+    int min = 1;
+    int max = 99999;
     return min + rand() % (max - min + 1);
 }
 
@@ -87,7 +87,7 @@ void Remove(unordered_map<int, list<HashTableEntry>>& hashTable, Company& policy
     }
     entries = tempEntries;
     if (corr == false)
-        cout << endl << "Дисциплину не удалось удалить из файла" << endl;
+        cout << endl << "Предприятие не удалось удалить из файла" << endl;
 }
 
 // Поиск ключа в таблице и файле
@@ -147,7 +147,6 @@ void Rehash(unordered_map<int, list<HashTableEntry>>& hashTable, int newTableSiz
     hashTable = newHashTable;
 }
 
-
 // Определение простого числа
 bool IsPrime(int n)
 {
@@ -182,6 +181,7 @@ int CalculateSize(int currentSize)
     }
     return newSize;
 }
+
 void Output(unordered_map<int, list<HashTableEntry>>& hashTable)
 {
     cout << endl << "После изменения" << endl;
@@ -226,10 +226,13 @@ int main()
     Company policy;
     for (int i = 0; i < quant; ++i)
     {
-        policy.license_number = i;
-        policy.name = 1001 + i;
-        policy.founder = "Дисциплина_" + to_string(i);
-        policy.active = false;
+        policy.license_number = to_string(Randomizer());
+        std::cout << "\nEnter name: ";
+        std::cin >> policy.name;
+        std::cout << "\nEnter founder: ";
+        std::cin >> policy.founder;
+        std::cout << "\nEnter license`s status: (0 - active, 1 - inactive) \n";
+        std::cin >> policy.active;
 
         textFile << policy.license_number << ' ' << policy.name << ' ' << policy.founder << ' ' << policy.active << '\n';
 
@@ -296,7 +299,7 @@ int main()
         {
         case 1:
             int insert;
-            cout << "Введите код дисциплины, которую вы желаете добавить ---> ";
+            cout << "Введите номер лицензии предприятия, которого хотите добавить ---> ";
             cin >> insert;
             Insert(hashTable, insert, tableSize, index);
             loadFactor = static_cast<double>(hashTable.size()) / tableSize;
@@ -310,7 +313,7 @@ int main()
             break;
         case 2:
             int found;
-            cout << "Введите код дисциплины, которую вы желаете найти ---> ";
+            cout << "Введите номер лицензии предприятия, которого вы желаете найти ---> ";
             cin >> found;
             start_time = chrono::high_resolution_clock::now();
             Find(hashTable, policy, binary, found, tableSize);
@@ -320,7 +323,7 @@ int main()
             break;
         case 3:
             int remove;
-            cout << "Введите код дисциплины, которую вы желаете удалить ---> ";
+            cout << "Введите номер лицензии предприятия, которого вы желаете удалить ---> ";
             cin >> remove;
             Remove(hashTable, policy, binary, remove, tableSize);
             Output(hashTable);
